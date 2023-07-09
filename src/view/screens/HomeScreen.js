@@ -1,9 +1,12 @@
 import React from 'react';
-import { Text, StyleSheet, View, SafeAreaView, TextInput } from 'react-native';
+import { Text, StyleSheet, View, SafeAreaView, TextInput, TouchableOpacity, FlatList, Dimensions, Image } from 'react-native';
 import COLORS from '../../consts/color';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import plants from '../../consts/plants';
 
-const HomeScreen = () => {
+const width = Dimensions.get('screen').width / 2 - 30
+
+const HomeScreen = ({ navigation }) => {
 
     const categories = ['POPULAR', 'ORGANIC', 'INDOORS', 'SYNTHETIC'];
 
@@ -13,16 +16,46 @@ const HomeScreen = () => {
         return (
             <View style={styles.categoryContainer}>
                 {categories.map((item, index) => (
-                    <Text
+                    <TouchableOpacity
                         key={index}
-                        style={[styles.categoryText, categoryIndex == index && styles.categorySelected
-                        ]}>
-                        {item}
-                    </Text>
+                        activeOpacity={0.8}
+                        onPress={() => setCategoryIndex(index)}  >
+                        <Text
+                            style={[styles.categoryText, categoryIndex == index && styles.categorySelected
+                            ]}>
+                            {item}
+                        </Text>
+                    </TouchableOpacity>
                 ))}
             </View>
         )
     }
+
+    const Card = ({ plants }) => {
+        return (
+            <TouchableOpacity onPress={() => navigation.navigate('Details')}>
+                <View style={styles.card}>
+                    <View style={styles.card_heartIcon}>
+                        <View style={[styles.card_heartIconBorder, { backgroundColor: plants.like ? 'rgba(245,42,42,0.2)' : 'rgba(0,0,0,0.2)' }]}>
+                            <Icon name='favorite' size={18} color={plants.like ? COLORS.red : COLORS.dark} />
+                        </View>
+                    </View>
+
+                    <View style={styles.card_imgContainer}>
+                        <Image style={styles.card_img} source={plants.img} />
+                    </View>
+
+                    <Text style={styles.card_namePlant}>{plants.name}</Text>
+                    <View style={styles.card_price}>
+                        <Text style={styles.card_textPrice}>${plants.price}</Text>
+                        <View style={styles.card_addContainer}>
+                            <Icon name='add' size={20} style={styles.card_addText} />
+                        </View>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        );
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -45,6 +78,17 @@ const HomeScreen = () => {
             </View>
 
             <CategoryList />
+            <FlatList
+                columnWrapperStyle={{ justifyContent: 'space-between' }}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                    marginTop: 10,
+                    paddingBottom: 50
+                }}
+                numColumns={2}
+                data={plants}
+                renderItem={({ item }) => <Card plants={item} />}
+            />
         </SafeAreaView>
     )
 }
@@ -117,5 +161,60 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         borderBottomWidth: 2,
         borderColor: COLORS.green
+    },
+    card: {
+        height: 225,
+        backgroundColor: COLORS.light,
+        width,
+        marginHorizontal: 2,
+        borderRadius: 10,
+        marginBottom: 20,
+        padding: 15
+    },
+    card_heartIcon: {
+        alignItems: 'flex-end'
+    },
+    card_heartIconBorder: {
+        width: 30,
+        height: 30,
+        borderRadius: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    card_imgContainer: {
+        height: 100,
+        alignItems: 'center'
+    },
+    card_img: {
+        flex: 1,
+        resizeMode: 'contain'
+    },
+    card_namePlant: {
+        fontWeight: 'bold',
+        fontSize: 17,
+        marginTop: 10,
+        color: COLORS.dark
+    },
+    card_price: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 5
+    },
+    card_textPrice: {
+        fontWeight: 'bold',
+        fontSize: 19,
+        color: COLORS.dark
+    },
+    card_addContainer: {
+        height: 25,
+        width: 25,
+        backgroundColor: COLORS.green,
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    card_addText: {
+        color: COLORS.white,
+        fontWeight: 'bold'
     }
 })
