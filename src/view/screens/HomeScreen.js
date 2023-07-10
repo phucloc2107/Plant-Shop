@@ -33,7 +33,7 @@ const HomeScreen = ({ navigation }) => {
 
     const Card = ({ plants }) => {
         return (
-            <TouchableOpacity onPress={() => navigation.navigate('Details')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Details', plants)}>
                 <View style={styles.card}>
                     <View style={styles.card_heartIcon}>
                         <View style={[styles.card_heartIconBorder, { backgroundColor: plants.like ? 'rgba(245,42,42,0.2)' : 'rgba(0,0,0,0.2)' }]}>
